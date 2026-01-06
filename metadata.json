@@ -1,0 +1,5 @@
+{
+  "name": "CHT Digital Library",
+  "description": "An enhanced, single-page e-book library for the Chittagong Hill Tracts (CHT), featuring a dynamic and responsive design. Built with vanilla JavaScript and Tailwind CSS, it offers advanced search, category filtering, and a visually rich user interface with stats and a detailed footer.",
+  "requestFramePermissions": []
+}
