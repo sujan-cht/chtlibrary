@@ -74,6 +74,17 @@
             background: #065f46;
             border-radius: 10px;
         }
+        /* Custom scrollbar for category filters */
+        #categoryFilters::-webkit-scrollbar {
+            height: 4px;
+        }
+        #categoryFilters::-webkit-scrollbar-thumb {
+            background: #d1fae5;
+            border-radius: 10px;
+        }
+        #categoryFilters::-webkit-scrollbar-track {
+            background: transparent;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -165,21 +176,21 @@
     <!-- Stats Bar -->
     <section class="container mx-auto px-4 -mt-12 relative z-20">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-emerald-50">
-            <div class="text-center p-4 border-r border-slate-100 last:border-0">
+            <div class="text-center p-4 md:border-r md:border-slate-100">
                 <div id="statsTotalBooks" class="text-3xl font-bold text-emerald-700 mb-1">...</div>
-                <div class="text-slate-500 text-sm">মোট ই-বই</div>
+                <div class="text-slate-500 text-sm">মোট বই</div>
             </div>
-            <div class="text-center p-4 border-r border-slate-100 last:border-0">
-                <div id="statsResearchPapers" class="text-3xl font-bold text-emerald-700 mb-1">...</div>
-                <div class="text-slate-500 text-sm">গবেষণাপত্র</div>
-            </div>
-            <div class="text-center p-4 border-r border-slate-100 last:border-0">
+            <div class="text-center p-4 md:border-r md:border-slate-100">
                 <div id="statsCategories" class="text-3xl font-bold text-emerald-700 mb-1">...</div>
-                <div class="text-slate-500 text-sm">বিভাগ</div>
+                <div class="text-slate-500 text-sm">ক্যাটাগরি</div>
             </div>
-            <div class="text-center p-4 last:border-0">
+            <div class="text-center p-4 md:border-r md:border-slate-100">
                 <div id="statsReaders" class="text-3xl font-bold text-emerald-700 mb-1">...</div>
                 <div class="text-slate-500 text-sm">পাঠক সংখ্যা</div>
+            </div>
+            <div class="text-center p-4">
+                <div id="statsEthnicGroups" class="text-3xl font-bold text-emerald-700 mb-1">...</div>
+                <div class="text-slate-500 text-sm">জাতিগোষ্ঠী</div>
             </div>
         </div>
     </section>
@@ -193,7 +204,7 @@
             </div>
             
             <!-- Custom Styled Filters -->
-            <div id="categoryFilters" class="flex flex-wrap gap-2">
+            <div id="categoryFilters" class="flex flex-nowrap gap-2 overflow-x-auto py-2 w-full md:w-auto">
                 <!-- Filter buttons injected by JS -->
             </div>
         </div>
@@ -305,27 +316,21 @@
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const dummyCover = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400";
             const books = [
-                { id: 1, title: "পার্বত্য চট্টগ্রামের আদিবাসী সমাজ", author: "প্রশান্ত ত্রিপুরা", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400", downloads: 1200, pages: "250", downloadUrl: "https://drive.google.com/uc?export=download&id=1yXwE6g2j0d1c7f9h-K_lM_nO-pQrS_tU" },
-                { id: 2, title: "চাকমা জাতির ইতিবৃত্ত", author: "বিরজ কুমার তঞ্চঙ্গ্যা", category: "ইতিহাস", cover: "https://images.unsplash.com/photo-1543004629-1420f545a133?auto=format&fit=crop&q=80&w=400", downloads: 850, pages: "180", downloadUrl: "https://drive.google.com/uc?export=download&id=1-R_sT_uVwXyZ0aB-c2dE3fG4hI5jK6lM" },
-                { id: 3, title: "জুম পাহাড়ে উৎসব", author: "মং হ্লা প্রু", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400", downloads: 500, pages: "96", downloadUrl: "https://drive.google.com/uc?export=download&id=1-Q_rS9tU5vW6xY7z0aB-c2dE3fG4hIj" },
-                { id: 4, title: "ম্রো ভাষা ও সংস্কৃতি", author: "গবেষক দল", category: "ভাষা", cover: "https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&q=80&w=400", downloads: 310, pages: "120", downloadUrl: "https://drive.google.com/uc?export=download&id=1-P_qR8sT4uV5wX6yZ7aB-c1dE2fG3hI" },
-                { id: 5, title: "পাহাড়ি ছোটগল্প সংকলন", author: "সুহৃদ চাকমা", category: "সাহিত্য", cover: "https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?auto=format&fit=crop&q=80&w=400", downloads: 2000, pages: "150", downloadUrl: "https://drive.google.com/uc?export=download&id=1-O_pQ7rS3tU4vW5xY6z0aB-c9dE8fG7h" },
-                { id: 6, title: "ত্রিপুরাদের জীবনগাথা", author: "অজ্ঞাতনামা লেখক", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?auto=format&fit=crop&q=80&w=400", downloads: 720, pages: "320", downloadUrl: "https://drive.google.com/uc?export=download&id=1-N_oP6qR2sT3uV4wX5yZ6aB-c8dE7fG6" },
-                { id: 7, title: "বাংলাদেশের মারমা জাতি", author: "ক্য শৈ প্রু", category: "ইতিহাস", cover: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&q=80&w=400", downloads: 600, pages: "220", downloadUrl: "https://drive.google.com/uc?export=download&id=1-M_nO5pQ1rS2tU3vW4xY5z0aB-c7dE6f" },
-                { id: 8, title: "পাহাড়ি ফুলের নাম", author: "উদ্ভিদবিদ", category: "সাহিত্য", cover: "https://images.unsplash.com/photo-1588666302332-688b5359a135?auto=format&fit=crop&q=80&w=400", downloads: 450, pages: "80", downloadUrl: "https://drive.google.com/uc?export=download&id=1-L_mN4oP9qR8sT7uV6wX5yZ4aB-c6dE5f" },
-                { id: 9, title: "চাকমা লোকসাহিত্য", author: "ডঃ সর্বেশ্বর চাকমা", category: "সাহিত্য", cover: "https://images.unsplash.com/photo-1506894723992-5635a4c933a3?auto=format&fit=crop&q=80&w=400", downloads: 1850, pages: "210", downloadUrl: "https://drive.google.com/uc?export=download&id=1-K_lM3nO8pQ7rS6tU5vW4xY3z0aB-c5dE4" },
-                { id: 10, title: "পার্বত্য চুক্তি: প্রেক্ষাপট ও...", author: "সি. আর. চাকমা", category: "গবেষণা", cover: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=400", downloads: 2500, pages: "450", downloadUrl: "https://drive.google.com/uc?export=download&id=1-J_kL2mN7oP6qR5sT4uV3wX2yZ1aB-c4dE" },
-                { id: 11, title: "তঞ্চঙ্গ্যা পরিচিতি", author: "গবেষণা পরিষদ", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&q=80&w=400", downloads: 480, pages: "110", downloadUrl: "https://drive.google.com/uc?export=download&id=1-I_jK1lM6nO5pQ4rS3tU2vW1xY0z-aB-c3d" },
-                { id: 12, title: "রাঙ্গামাটির ইতিহাস", author: "আবুল কাসেম", category: "ইতিহাস", cover: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=400", downloads: 950, pages: "300", downloadUrl: "https://drive.google.com/uc?export=download&id=1-H_iJ9kL5mN4oP3qR2sT1uV9wX8yZ7aB-c2" },
-                { id: 13, title: " চাকমা ভাষার ব্যাকরণ", author: "সুগত চাকমা", category: "ভাষা", cover: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=400", downloads: 1100, pages: "160", downloadUrl: "https://drive.google.com/uc?export=download&id=1-G_hI8jK4lM3nO2pQ1rS9tU8vW7xY6z0aB-" },
-                { id: 14, title: "পাহাড়ি বুননশিল্প", author: "কারিগর পরিষদ", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1524562097395-3d9224c5872d?auto=format&fit=crop&q=80&w=400", downloads: 680, pages: "90", downloadUrl: "https://drive.google.com/uc?export=download&id=1-F_gH7iJ3kL2mN1oP9qR8sT7uV6wX5yZ4a" },
-                { id: 15, title: "ভূমি অধিকার ও পার্বত্য চট্টগ্রাম", author: "এডভোকেট জ্ঞানশংকর চাকমা", category: "গবেষণা", cover: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&q=80&w=400", downloads: 1500, pages: "280", downloadUrl: "https://drive.google.com/uc?export=download&id=1-E_fG6hI2jK1lM9nO8pQ7rS6tU5vW4xY3" },
-                { id: 16, title: "মারমা লোককাহিনী", author: "সংকলক", category: "সাহিত্য", cover: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400", downloads: 880, pages: "130", downloadUrl: "https://drive.google.com/uc?export=download&id=1-D_eF5gH1iJ9kL8mN7oP6qR5sT4uV3wX2" },
-                { id: 17, title: "বান্দরবানের উপজাতি", author: "ঐতিহাসিক", category: "ইতিহাস", cover: "https://images.unsplash.com/photo-1519682337354-921a24d5c1ad?auto=format&fit=crop&q=80&w=400", downloads: 710, pages: "190", downloadUrl: "https://drive.google.com/uc?export=download&id=1-C_dE4fG9hI8jK7lM6nO5pQ4rS3tU2vW1" },
-                { id: 18, title: "ত্রিপুরা ভাষা শিক্ষা", author: "শিক্ষাবিদ", category: "ভাষা", cover: "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&q=80&w=400", downloads: 920, pages: "100", downloadUrl: "https://drive.google.com/uc?export=download&id=1-B_cE3fG8hI7jK6lM5nO4pQ3rS2tU1vW" },
-                { id: 19, title: "খাগড়াছড়ির আদিবাসী", author: "নৃবিজ্ঞানী", category: "সংস্কৃতি", cover: "https://images.unsplash.com/photo-1542870928-c23171b3824b?auto=format&fit=crop&q=80&w=400", downloads: 550, pages: "140", downloadUrl: "https://drive.google.com/uc?export=download&id=1-A_bC2dE7fG6hI5jK4lM3nO2pQ1rS9tU" },
-                { id: 20, title: "জুম অর্থনীতি ও পরিবেশ", author: "অর্থনীতিবিদ", category: "গবেষণা", cover: "https://images.unsplash.com/photo-1513001900722-370f803f498d?auto=format&fit=crop&q=80&w=400", downloads: 1300, pages: "240", downloadUrl: "https://drive.google.com/uc?export=download&id=1-9_aB1cD6fG5hI4jK3lM2nO1pQ9rS8t" }
+                { id: 1, title: "পার্বত্য চট্টগ্রামে একাত্তর", author: "লিলিন সরকার", category: "ইতিহাস", cover: dummyCover, pages: 130, size: "1.5 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1v0F79u1VvXpB4H8J7L6nO5pQ4rS3tU2v" },
+                { id: 2, title: "পার্বত্য চট্টগ্রাম কমিশন রিপোর্ট ১৯৯১", author: "CHT কমিশন", category: "ইতিহাস", cover: dummyCover, pages: 164, size: "2.1 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1u_gH6iJ5kL4mN3oP2qR1sT9uV8wX7yZ6" },
+                { id: 3, title: "চাকমা জাতির ইতিবৃত্ত", author: "বিরজ কুমার তঞ্চঙ্গ্যা", category: "ইতিহাস", cover: dummyCover, pages: 202, size: "15.6 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-R_sT_uVwXyZ0aB-c2dE3fG4hI5jK6lM" },
+                { id: 4, title: "চাকমা ভাষার ব্যাকরণ", author: "সুগত চাকমা", category: "ভাষা", cover: dummyCover, pages: 160, size: "8.9 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-G_hI8jK4lM3nO2pQ1rS9tU8vW7xY6z0aB-" },
+                { id: 5, title: "চাকমা লোকসাহিত্য", author: "ডঃ সর্বেশ্বর চাকমা", category: "সাহিত্য", cover: dummyCover, pages: 212, size: "10.2 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-K_lM3nO8pQ7rS6tU5vW4xY3z0aB-c5dE4" },
+                { id: 6, title: "পার্বত্য চট্টগ্রাম ম্যানুয়াল", author: "সরকারি প্রকাশনা", category: "ইতিহাস", cover: dummyCover, pages: 208, size: "12.3 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1t_eF5gH4iJ3kL2mN1oP9qR8sT7uV6wX5" },
+                { id: 7, title: "পার্বত্য চট্টগ্রামের আদিবাসী সমাজ", author: "প্রশান্ত ত্রিপুরা", category: "সংস্কৃতি", cover: dummyCover, pages: 250, size: "18.1 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1yXwE6g2j0d1c7f9h-K_lM_nO-pQrS_tU" },
+                { id: 8, title: "জুম পাহাড়ে উৎসব", author: "মং হ্লা প্রু", category: "সংস্কৃতি", cover: dummyCover, pages: 96, size: "6.8 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-Q_rS9tU5vW6xY7z0aB-c2dE3fG4hIj" },
+                { id: 9, title: "ভূমি অধিকার ও পার্বত্য চট্টগ্রাম", author: "এডভোকেট জ্ঞানশংকর চাকমা", category: "ইতিহাস", cover: dummyCover, pages: 280, size: "14.5 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-E_fG6hI2jK1lM9nO8pQ7rS6tU5vW4xY3" },
+                { id: 10, title: "মারমা লোককাহিনী", author: "সংকলক", category: "সাহিত্য", cover: dummyCover, pages: 130, size: "7.2 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-D_eF5gH1iJ9kL8mN7oP6qR5sT4uV3wX2" },
+                { id: 11, title: "পাহাড়ি বুননশিল্প", author: "কারিগর পরিষদ", category: "সংস্কৃতি", cover: dummyCover, pages: 90, size: "9.1 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-F_gH7iJ3kL2mN1oP9qR8sT7uV6wX5yZ4a" },
+                { id: 12, title: "পাহাড়ি ছোটগল্প সংকলন", author: "সুহৃদ চাকমা", category: "সাহিত্য", cover: dummyCover, pages: 150, size: "5.4 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-O_pQ7rS3tU4vW5xY6z0aB-c9dE8fG7h" },
+                { id: 13, title: "ত্রিপুরা ভাষা শিক্ষা", author: "শিক্ষাবিদ", category: "শিক্ষা", cover: dummyCover, pages: 100, size: "4.8 MB", downloadUrl: "https://drive.google.com/uc?export=download&id=1-B_cE3fG8hI7jK6lM5nO4pQ3rS2tU1vW" }
             ];
 
             const booksGrid = document.getElementById('booksGrid');
@@ -347,12 +352,6 @@
                             <div class="book-card bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm flex flex-col group h-full w-72 sm:w-auto">
                                 <div class="relative overflow-hidden aspect-[3/4]">
                                     <img src="${book.cover}" alt="${book.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                                        <div class="flex gap-2">
-                                            <button aria-label="Quick View" class="bg-white text-emerald-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fas fa-eye"></i></button>
-                                            <button aria-label="Add to Favorites" class="bg-white text-emerald-900 w-10 h-10 rounded-full flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fas fa-heart"></i></button>
-                                        </div>
-                                    </div>
                                     <div class="absolute top-4 left-4">
                                         <span class="bg-white/90 backdrop-blur-md text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
                                             ${book.category}
@@ -364,8 +363,8 @@
                                     <p class="text-slate-500 text-sm mb-6 font-medium">${book.author}</p>
                                     
                                     <div class="flex items-center justify-between text-xs text-slate-400 mb-6 pt-4 border-t border-slate-50">
-                                        <span class="flex items-center gap-1"><i class="fas fa-file-alt"></i> ${book.pages} পাতা</span>
-                                        <span class="flex items-center gap-1"><i class="fas fa-cloud-download-alt"></i> ${book.downloads.toLocaleString('bn-BD')} বার</span>
+                                        <span class="flex items-center gap-1.5"><i class="fas fa-file-alt"></i> ${book.pages} পাতা</span>
+                                        <span class="flex items-center gap-1.5"><i class="fas fa-database"></i> ${book.size}</span>
                                     </div>
 
                                     <div class="mt-auto">
@@ -383,13 +382,13 @@
             
             function performSearch() {
                 const term = searchInput.value.toLowerCase();
-                const activeCategory = document.querySelector('.category-btn.btn-active').dataset.category;
+                const activeCategoryBtn = document.querySelector('.category-btn.btn-active');
+                const activeCategory = activeCategoryBtn ? activeCategoryBtn.dataset.category : 'All';
 
                 const searched = books.filter(book => {
                     const inCategory = activeCategory === 'All' || book.category === activeCategory;
                     const matchesTerm = book.title.toLowerCase().includes(term) || 
-                                     book.author.toLowerCase().includes(term) ||
-                                     book.category.toLowerCase().includes(term);
+                                     book.author.toLowerCase().includes(term);
                     return inCategory && matchesTerm;
                 });
                 renderBooks(searched);
@@ -408,14 +407,15 @@
             }
 
             function populateCategories() {
-                const categories = ['All', ...new Set(books.map(book => book.category))];
+                const categories = ['All', 'ইতিহাস', 'ভাষা', 'শিক্ষা', 'সংস্কৃতি', 'সাহিত্য'];
                 categoryFiltersContainer.innerHTML = '';
                 categories.forEach(category => {
                     const categoryName = category === 'All' ? 'সবগুলো' : category;
                     const button = document.createElement('button');
                     button.textContent = categoryName;
                     button.dataset.category = category;
-                    button.className = 'category-btn px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-emerald-600 transition-all font-medium';
+                    // Added whitespace-nowrap to prevent line breaks
+                    button.className = 'category-btn px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-emerald-600 transition-all font-medium whitespace-nowrap';
                     if (category === 'All') {
                         button.classList.add('btn-active');
                     }
@@ -425,15 +425,13 @@
             }
             
             function updateStats() {
-                const totalBooks = books.length;
-                const totalResearch = books.filter(b => b.category === 'গবেষণা').length;
-                const totalCategories = new Set(books.map(b => b.category)).size;
-                const totalDownloads = books.reduce((sum, book) => sum + book.downloads, 0);
-
-                document.getElementById('statsTotalBooks').textContent = `${totalBooks}+`;
-                document.getElementById('statsResearchPapers').textContent = `${totalResearch}+`;
-                document.getElementById('statsCategories').textContent = `${totalCategories}+`;
-                document.getElementById('statsReaders').textContent = `${Math.floor(totalDownloads / 1000)}k+`;
+                // Category breakdown comment
+                // ইতিহাস: 5, ভাষা: 1, শিক্ষা: 1, সংস্কৃতি: 3, সাহিত্য: 3
+                
+                document.getElementById('statsTotalBooks').textContent = `${books.length}+`;
+                document.getElementById('statsCategories').textContent = `5টি`;
+                document.getElementById('statsReaders').textContent = `12,500+`;
+                document.getElementById('statsEthnicGroups').textContent = `13টি`;
             }
             
             // Mobile Menu Logic
@@ -443,22 +441,26 @@
             const closeMenuBtn = document.getElementById('closeMenuBtn');
             const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
 
+            function toggleMobileMenu(show) {
+                if(show) {
+                    mobileMenu.classList.remove('hidden');
+                    setTimeout(() => mobileMenuContent.classList.remove('translate-x-full'), 10);
+                } else {
+                    mobileMenuContent.classList.add('translate-x-full');
+                    setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+                }
+            }
+
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                mobileMenu.classList.remove('hidden');
-                setTimeout(() => mobileMenuContent.classList.remove('translate-x-full'), 10);
+                toggleMobileMenu(true);
             });
 
-            const closeMenu = () => {
-                mobileMenuContent.classList.add('translate-x-full');
-                setTimeout(() => mobileMenu.classList.add('hidden'), 300);
-            };
-
-            closeMenuBtn.addEventListener('click', closeMenu);
+            closeMenuBtn.addEventListener('click', () => toggleMobileMenu(false));
             mobileMenu.addEventListener('click', (e) => {
-                 if (e.target === mobileMenu) closeMenu();
+                 if (e.target === mobileMenu) toggleMobileMenu(false);
             });
-            mobileMenuLinks.forEach(link => link.addEventListener('click', closeMenu));
+            mobileMenuLinks.forEach(link => link.addEventListener('click', () => toggleMobileMenu(false)));
 
 
             // Event Listeners
